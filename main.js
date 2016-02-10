@@ -2,7 +2,7 @@ var nodes = null;
 var edges = null;
 var network = null;
 // randomly create some nodes and edges
-var data = getScaleFreeNetwork(25);
+var data = generateGraph(25);
 var seed = 2;
 
 
@@ -21,8 +21,19 @@ function draw() {
     // create a network
     var container = document.getElementById('mynetwork');
     var options = {
-        layout: {randomSeed:seed}, // just to make sure the layout is the same when the locale is changed
-        locale: document.getElementById('locale').value,
+        layout: {
+            hierarchical: {
+                direction: "DU",
+                sortMethod: "directed",
+            }
+        }, // just to make sure the layout is the same when the locale is changed
+        edges: {
+            smooth: {
+                type: 'cubicBezier',
+                forceDirection: 'vertical',
+                roundness: 0.4
+            }
+        },
         manipulation: {
             addNode: function (data, callback) {
                 // filling in the popup DOM elements
@@ -53,7 +64,7 @@ function draw() {
                     callback(data);
                 }
             }
-        }
+        },
     };
     network = new vis.Network(container, data, options);
 }
