@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<!-- saved from url=(0057)http://visjs.org/examples/network/other/manipulation.html -->
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>Network | Manipulation</title>
+
+		<script type="text/javascript" src="exampleUtil.js"></script>
+		<script type="text/javascript" src="vis.js"></script>
+		<script type="text/javascript" src="main.js"></script>
+		<link href="vis.css" rel="stylesheet" type="text/css" />
+	</head>
+	<body onload="draw();">
+		<h2>Editing the nodes and edges (localized)</h2>
+		<p style="width: 700px; font-size:14px; text-align: justify;">
+			The localization is only relevant to the manipulation buttons.
+		</p>
+		<p>
+			<label for="locale">Select a locale:</label>
+			<select id="locale" onchange="draw();">
+				<option value="en" selected="">en</option>
+				<option value="nl">nl</option>
+			</select>
+		</p>
+
+		<div id="network-popUp">
+			<span id="operation">node</span> <br>
+			<table style="margin:auto;"><tbody><tr>
+				<td>id</td><td><input id="node-id" value="new value"></td>
+			</tr>
+				<tr>
+					<td>label</td><td><input id="node-label" value="new value"></td>
+				</tr></tbody></table>
+			<input type="button" value="save" id="saveButton">
+			<input type="button" value="cancel" id="cancelButton">
+		</div>
+
+		<br />
+		<div id="mynetwork">
+			<div class="vis-network" tabindex="900" style="position: relative; overflow: hidden; touch-action: pan-y; -webkit-user-select: none; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); width: 100%; height: 100%;">
+				<canvas style="position: relative; touch-action: none; -webkit-user-select: none; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); width: 100%; height: 100%;" width="800" height="600"></canvas>
+				<div class="vis-manipulation" style="display: none;"></div>
+				<div class="vis-edit-mode" style="display: block;">
+					<div class="vis-button vis-edit vis-edit-mode" style="touch-action: pan-y; -webkit-user-select: none; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
+					<div class="vis-label">Edit</div></div>
+				</div>
+				<div class="vis-close" style="display: none;"></div>
+			</div>
+		</div>
+	</body>
+</html>
