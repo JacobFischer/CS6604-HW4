@@ -63,6 +63,7 @@ function getDataForVisJS(rootNode) {
         visNodes.push({
             id: node.id,
             label: String(node.id),
+            lavel: node.level,
         });
 
         for(var childNodeID in node.children) {

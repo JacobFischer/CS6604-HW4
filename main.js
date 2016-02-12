@@ -3,6 +3,7 @@ var edges = null;
 var network = null;
 
 var tree = generateTree(25);
+var dataForVisJS = getDataForVisJS(tree[0]);
 
 function destroy() {
     if (network !== null) {
@@ -20,15 +21,16 @@ function draw() {
         layout: {
             hierarchical: {
                 direction: "UD",
-                /*sortMethod: "directed",*/
+                //sortMethod: "directed",
             }
-        }, // just to make sure the layout is the same when the locale is changed
+        },
         edges: {
             smooth: {
                 type: 'cubicBezier',
                 forceDirection: 'vertical',
                 roundness: 0.4
-            }
+            },
+            arrows: 'to',
         },
         manipulation: {
             addNode: function (data, callback) {
@@ -61,9 +63,12 @@ function draw() {
                 }
             }
         },
+        physics:{
+            stabilization: false,
+        },
     };
-    var data = getDataForVisJS(tree[0]);
-    network = new vis.Network(container, data, options);
+
+    network = new vis.Network(container, dataForVisJS, options);
 }
 
 function clearPopUp() {
@@ -83,3 +88,23 @@ function saveData(data,callback) {
     clearPopUp();
     callback(data);
 }
+
+$(document).ready(function() {
+    function locate(callback) {
+        var cloned = $.extend(true, {}, dataForVisJS);
+        var caller = tree[$("#caller").val()];
+        var callee = tree[$("#callee").val()];
+
+        callback(caller, callee, cloned);
+
+        network.setData(cloned);
+    };
+
+    $("#locate-via-pointer").on("click", function() {
+        locate(locateViaPointers);
+    })
+
+    $("#locate-via-database").on("click", function() {
+        locate(locateViaDatabase);
+    })
+});
