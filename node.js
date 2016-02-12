@@ -11,7 +11,6 @@ function Node(parentNode) {
     if(this.parent) {
         this.level = 1 + this.parent.addChild(this);
     }
-    console.log("new node " + this.id + " at level " + this.level);
 };
 
 Node.prototype.addChild = function(childNode) {

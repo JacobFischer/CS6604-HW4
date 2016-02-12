@@ -3,12 +3,11 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-		<title>Network | Manipulation</title>
+		<title>CS66004-HW1</title>
 
 		<script type="text/javascript" src="jquery-2.2.0.min.js"></script>
 		<script type="text/javascript" src="node.js"></script>
 		<script type="text/javascript" src="tree.js"></script>
-		<script type="text/javascript" src="generateGraph.js"></script>
 		<script type="text/javascript" src="vis.js"></script>
 		<script type="text/javascript" src="locate.js"></script>
 		<script type="text/javascript" src="main.js"></script>
@@ -52,8 +51,14 @@
 			</div>
 		</div>
 		<div id="homework-controls">
-			<label for="caller">Caller:</label><input id="caller" type="number" min="0"/>
-			<label for="callee">Callee:</label><input id="callee" type="number" min="0"/>
+			<form>
+				<label for="Caller">Move Caller to:</label><input id="Caller" type="number" min="0"/>
+				<input type="submit"></input>
+			</form>
+			<form>
+				<label for="Callee">Move Callee to:</label><input id="Callee" type="number" min="0"/>
+				<input type="submit"></input>
+			</form>
 			<button id="locate-via-pointer">Locate Via Pointer</button>
 			<button id="locate-via-database">Locate Via Database</button>
 		</div>

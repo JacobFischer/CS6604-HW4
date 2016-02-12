@@ -53,7 +53,8 @@ function generateTree(size) {
     return nodes; // this is the root node, it's a tree so you can follow .children to traverse it
 };
 
-function getDataForVisJS(rootNode) {
+function getDataForVisJS(tree, users) {
+    var rootNode = tree[0];
     var visNodes = [];
     var visEdges = [];
 
@@ -63,7 +64,8 @@ function getDataForVisJS(rootNode) {
         visNodes.push({
             id: node.id,
             label: String(node.id),
-            lavel: node.level,
+            level: node.level,
+            title: "title: " + node.id,
         });
 
         for(var childNodeID in node.children) {
@@ -78,6 +80,22 @@ function getDataForVisJS(rootNode) {
                 nodes.push(childNode);
             }
         }
+    }
+
+    for(var i = 0; i < users.length; i++) {
+        var user = users[i];
+        visNodes.push({
+            id: user.id,
+            label: user.id,
+            color: user.color,
+            level: user.location.level + 1,
+        });
+
+        visEdges.push({
+            from: user.id,
+            to: user.location.id,
+            color: "black",
+        });
     }
 
     return {

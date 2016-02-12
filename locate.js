@@ -4,7 +4,7 @@ function locateViaPointers(caller, callee, originalData) {
     // do LCA to travel upwards from the caller
     var lca = caller;
     while(lca) {
-        if(lca.contains(callee)) {
+        if(lca.contains(callee) || lca === callee) {
             break;
         }
 
@@ -47,7 +47,7 @@ function locateViaPointers(caller, callee, originalData) {
 function locateViaDatabase(caller, callee, originalData) {
     var lca = caller;
     while(lca) {
-        if(lca.contains(callee)) {
+        if(lca.contains(callee) || lca === callee) {
             break;
         }
 
