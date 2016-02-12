@@ -1,10 +1,8 @@
 var nodes = null;
 var edges = null;
 var network = null;
-// randomly create some nodes and edges
-var data = generateGraph(25);
-var seed = 2;
 
+var tree = generateTree(25);
 
 function destroy() {
     if (network !== null) {
@@ -15,16 +13,14 @@ function destroy() {
 
 function draw() {
     destroy();
-    nodes = [];
-    edges = [];
 
     // create a network
     var container = document.getElementById('mynetwork');
     var options = {
         layout: {
             hierarchical: {
-                direction: "DU",
-                sortMethod: "directed",
+                direction: "UD",
+                /*sortMethod: "directed",*/
             }
         }, // just to make sure the layout is the same when the locale is changed
         edges: {
@@ -66,6 +62,7 @@ function draw() {
             }
         },
     };
+    var data = getDataForVisJS(tree[0]);
     network = new vis.Network(container, data, options);
 }
 
