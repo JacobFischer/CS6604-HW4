@@ -2,12 +2,32 @@ var nodes = null;
 var edges = null;
 var network = null;
 
-var tree = generateTree(30);
+var getUrlParameter = function getUrlParameter(sParam) {
+    var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
 
-var caller = new User("Caller", randomElementFromArray(tree));
-var callee = new User("Callee", randomElementFromArray(tree));
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
 
-var users = [ caller, callee ];
+        if (sParameterName[0] === sParam) {
+            return sParameterName[1] === undefined ? true : sParameterName[1];
+        }
+    }
+};
+
+var numberOfNodes = parseInt(getUrlParameter("nodes")) || 30;
+var numberOfUsers = parseInt(getUrlParameter("users")) || 2;
+
+var tree = generateTree(numberOfNodes);
+var users = [];
+var usersByID = {};
+for(var i = 0; i < numberOfUsers; i++) {
+    var user = new User(String.fromCharCode("A".charCodeAt(0) + i), randomElementFromArray(tree));
+    users.push(user);
+    usersByID[user.id] = user;
+}
 
 var dataForVisJS;
 
@@ -66,58 +86,88 @@ function draw() {
     updateNetwork();
 };
 
-function clearPopUp() {
-    document.getElementById('saveButton').onclick = null;
-    document.getElementById('cancelButton').onclick = null;
-    document.getElementById('network-popUp').style.display = 'none';
-};
-
-function cancelEdit(callback) {
-    clearPopUp();
-    callback(null);
-};
-
-function saveData(data,callback) {
-    data.id = document.getElementById('node-id').value;
-    data.label = document.getElementById('node-label').value;
-    clearPopUp();
-    callback(data);
-};
-
 $(document).ready(function() {
     $print = $("#print");
-    $cost = $("#cost")
+    $cost = $("#cost");
+    var $caller = $("#caller");
+    var $callee = $("#callee");
+
     function locate(callback) {
         var cloned = $.extend(true, {}, dataForVisJS);
 
+        var caller = usersByID[$caller.val()];
+        var callee = usersByID[$callee.val()];
+
         $print.html("");
         print("Locating " + caller.id + " @ " + caller.location.id + " to " + callee.id + " @ " + callee.location.id + ".");
-        var result = callback(caller, callee, cloned);
+
+        var result = callback(caller, callee, showForwardingPointers ? callee.homeLocation : callee.location, cloned);
+
+        if(showForwardingPointers) {
+            var node = callee.homeLocation;
+            while(node && !node.hasUser(callee)) {
+                var next = node.forwardingPointers[callee.id];
+                cloned.edges.push({
+                    from: node.id,
+                    to: next.id,
+                    color: "yellow",
+                });
+
+                print("&#x219d; Following Forwarding Pointer from Node " + node.id + " to Node " + next.id + " for User " + callee.id);
+                node = next;
+            }
+        }
+
+        print("&#10003; Found the callee at Node " + callee.location.id);
 
         $cost.html("Total cost: " + result.hops + " node hops" +(result.updates ? " + update cost" : "") + ".");
 
         updateNetwork(cloned);
     };
 
-    $("#homework-controls form").on("submit", function(e) {
-        e.preventDefault();
-        var $form = $(this);
-        var $number = $('input[type="number"]', $form);
+    var $userSelect = $(".user-select");
+    var htmlStr = "";
+    for(var i = 0; i < users.length; i++) {
+        var id = users[i].id;
+        htmlStr += '<option value="' + id + '">' + id + '</option>';
+    }
+    $userSelect.html(htmlStr);
 
-        var id = $number.attr("id");
-        var user;
-        for(var i = 0; i < users.length; i++) {
-            users[i];
-            if(users[i].id === id) {
-                user = users[i];
+    var flip = function($flipping, $flipped) {
+        var val = $flipped.val();
+        var options = $flipping.children();
+        for(var i = 0; i < options.length; i++) {
+            var $option = $(options[i]);
+            if($option.val() !== val) {
+                $flipping.val($option.val());
                 break;
             }
         }
+    }
 
-        if(!user) {
-            alert("Error: could not find the user '" + id +"'.");
-            return;
-        }
+    $caller.on("change", function() {
+        flip($callee, $caller);
+    });
+
+    $callee.on("change", function() {
+        flip($caller, $callee);
+    });
+
+    $useForwardingPointers = $("#use-forwarding-pointers");
+    $useForwardingPointers.on("change", function() {
+        showForwardingPointers = $useForwardingPointers.is(':checked');
+        updateNetwork();
+    });
+
+    flip($callee, $caller);
+
+    $moveUserTo = $("#move-user-to")
+        .attr("max", tree.length);
+
+    $("#move-user").on("submit", function(e) {
+        e.preventDefault();
+        var $form = $(this);
+        var $number = $moveUserTo;
 
         var newLocationID = parseInt($number.val());
         var newLocation = tree[newLocationID];
@@ -126,8 +176,15 @@ $(document).ready(function() {
             return;
         }
 
+        var user = usersByID[$("#move-user-id").val()];
+
+        if(!user) {
+            alert("Error: could not find the user '" + id +"'.");
+            return;
+        }
+
         newLocation.registerUser(user);
-        $number.val("");
+        $number.val(0);
         updateNetwork();
     })
 

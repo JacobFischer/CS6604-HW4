@@ -35,6 +35,10 @@ Node.prototype.contains = function(node) {
     return Boolean(this.children[node.id] || this._subChildren[node.id]);
 };
 
+Node.prototype.hasUser = function(user) {
+    return Boolean(this._users[user.id]);
+}
+
 Node.prototype.registerUser = function(user) {
     var oldLocation = user.location;
     user.location = this;

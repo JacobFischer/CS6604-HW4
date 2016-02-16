@@ -29,14 +29,14 @@
 			</div>
 		</div>
 		<div id="homework-controls">
-			<form>
-				<label for="Caller">Move Caller to:</label><input id="Caller" type="number" min="0"/>
+			<div id="parameters">
+				<label for="use-forwarding-pointers">Use Forwarding Pointers?</label><input id="use-forwarding-pointers" type="checkbox" checked/>
+			</div>
+			<form id="move-user">
+				<label for="move-user-to">Move <select id="move-user-id" class="user-select"></select> to:</label><input id="move-user-to" type="number" min="0" value="0"/>
 				<input type="submit"></input>
 			</form>
-			<form>
-				<label for="Callee">Move Callee to:</label><input id="Callee" type="number" min="0"/>
-				<input type="submit"></input>
-			</form>
+			<p>User <select id="caller" class="user-select"></select> calls <select id="callee" class="user-select"></select> via:</p>
 			<button id="locate-via-pointer">Locate Via Pointer</button>
 			<button id="locate-via-database">Locate Via Database</button>
 		</div>

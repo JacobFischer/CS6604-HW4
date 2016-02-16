@@ -7,6 +7,6 @@ function User(id, location) {
     this.id = id;
     this.color = colors[colorIndex++];
     this.location = location;
-    this.originalLocation = location;
+    this.homeLocation = location;
     location.registerUser(this);
 };

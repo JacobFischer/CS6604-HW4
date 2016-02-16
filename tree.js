@@ -88,7 +88,7 @@ function getDataForVisJS(tree, users, showForwardingPointers) {
                     visEdges.push({
                         from: node.id,
                         to: forwardingPointerNode.id,
-                        color: "Magenta",
+                        color: usersByID[userID].color,
                     });
                 }
             }
