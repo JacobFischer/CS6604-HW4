@@ -2,9 +2,13 @@
 
 function locateViaPointers(caller, callee, originalData) {
     // do LCA to travel upwards from the caller
-    var lca = caller;
+    var hops = 0;
+    print("Traversing from " + caller.location.id + " upwards to LCA(caller.location, callee.location)");
+
+    var lca = caller.location;
     while(lca) {
-        if(lca.contains(callee) || lca === callee) {
+        if(lca.contains(callee.location) || lca === callee.location) {
+            print("&rarr; Node " + lca.id + " is LCA(caller.location, callee.location)");
             break;
         }
 
@@ -15,26 +19,30 @@ function locateViaPointers(caller, callee, originalData) {
                 color: "red",
             });
 
+            print("&uarr; Node " + lca.id + " is not LCA, so need to continue looking upwards");
+            hops++;
+
             lca = lca.parent;
         }
     }
 
-    console.log("LCA of " + caller.id + " and " + callee.id + " is " + lca.id + ".");
-
     // we now found the LCA, so travel down to the callee.
     var downNode = lca;
     var count = 0;
-    while(downNode !== callee && ++count < 1000) { // find the node downwards that has the callee (LCA part 2)
+    while(downNode !== callee.location && ++count < 1000) { // find the node downwards that has the callee (LCA part 2)
         for(var childID in downNode.children) {
             if(downNode.children.hasOwnProperty(childID)) {
                 var child = downNode.children[childID];
 
-                if(child.contains(callee) || child === callee) {
+                if(child.contains(callee.location) || child === callee.location) {
                     originalData.edges.push({ // see above
                         from: downNode.id,
                         to: child.id,
                         color: "green",
                     });
+
+                    print("&darr; Node " + downNode.id + " is not the callee's location, so need to continue downwards");
+                    hops++;
 
                     downNode = child;
                     break;
@@ -42,12 +50,23 @@ function locateViaPointers(caller, callee, originalData) {
             }
         }
     }
+
+    print("&#10003; Node " + downNode.id + " is the callee");
+
+    return {
+        hops: hops,
+    };
 };
 
 function locateViaDatabase(caller, callee, originalData) {
-    var lca = caller;
+    // do LCA to travel upwards from the caller
+    var hops = 0;
+    print("Traversing from " + caller.location.id + " upwards to LCA(caller.location, callee.location)");
+
+    var lca = caller.location;
     while(lca) {
-        if(lca.contains(callee) || lca === callee) {
+        if(lca.contains(callee.location) || lca === callee.location) {
+            print("&rarr; Node " + lca.id + " is LCA(caller.location, callee.location)");
             break;
         }
 
@@ -58,17 +77,24 @@ function locateViaDatabase(caller, callee, originalData) {
                 color: "red",
             });
 
+            print("&uarr; Node " + lca.id + " is not LCA, so need to continue looking upwards");
+            hops++;
+
             lca = lca.parent;
         }
     }
 
-    console.log("LCA of " + caller.id + " and " + callee.id + " is " + lca.id + ".");
 
     // now we are at the LCA, it has the database location saved so go strait there.
     originalData.edges.push({ // see above
         from: lca.id,
-        to: callee.id,
+        to: callee.location.id,
         color: "green",
-        label: "@ " + callee.id,
     });
+
+    print("&darr; Read the database here at the LCA to find the Caller is at Node " + callee.location.id);
+    return {
+        hops: hops + 1, // +1 for database hop
+        updates: true,
+    };
 };

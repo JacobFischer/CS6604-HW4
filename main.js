@@ -2,19 +2,10 @@ var nodes = null;
 var edges = null;
 var network = null;
 
-var tree = generateTree(25);
+var tree = generateTree(30);
 
-var caller = {
-    id: "Caller",
-    location: randomElementFromArray(tree),
-    color: "orange",
-};
-
-var callee = {
-    id: "Callee",
-    location: randomElementFromArray(tree),
-    color: "limegreen",
-};
+var caller = new User("Caller", randomElementFromArray(tree));
+var callee = new User("Callee", randomElementFromArray(tree));
 
 var users = [ caller, callee ];
 
@@ -34,6 +25,13 @@ function destroy() {
         network.destroy();
         network = null;
     }
+};
+
+var $print;
+function print(str) {
+    $print.append(
+        $("<li>").html(str)
+    );
 };
 
 function draw() {
@@ -84,10 +82,16 @@ function saveData(data,callback) {
 };
 
 $(document).ready(function() {
+    $print = $("#print");
+    $cost = $("#cost")
     function locate(callback) {
         var cloned = $.extend(true, {}, dataForVisJS);
 
-        callback(caller.location, callee.location, cloned);
+        $print.html("");
+        print("Locating " + caller.id + " @ " + caller.location.id + " to " + callee.id + " @ " + callee.location.id + ".");
+        var result = callback(caller, callee, cloned);
+
+        $cost.html("Total cost: " + result.hops + " node hops" +(result.updates ? " + update cost" : "") + ".");
 
         updateNetwork(cloned);
     };
