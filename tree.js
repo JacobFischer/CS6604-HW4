@@ -53,7 +53,7 @@ function generateTree(size) {
     return nodes; // this is the root node, it's a tree so you can follow .children to traverse it
 };
 
-function getDataForVisJS(tree, users) {
+function getDataForVisJS(tree, users, showForwardingPointers) {
     var rootNode = tree[0];
     var visNodes = [];
     var visEdges = [];
@@ -78,6 +78,19 @@ function getDataForVisJS(tree, users) {
                 });
 
                 nodes.push(childNode);
+            }
+        }
+
+        if(showForwardingPointers) {
+            for(var userID in node.forwardingPointers) {
+                if(node.forwardingPointers.hasOwnProperty(userID)) {
+                    var forwardingPointerNode = node.forwardingPointers[userID];
+                    visEdges.push({
+                        from: node.id,
+                        to: forwardingPointerNode.id,
+                        color: "Magenta",
+                    });
+                }
             }
         }
     }

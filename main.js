@@ -11,9 +11,10 @@ var users = [ caller, callee ];
 
 var dataForVisJS;
 
+var showForwardingPointers = true;
 function updateNetwork(data) {
     if(!data) {
-        dataForVisJS = getDataForVisJS(tree, users);
+        dataForVisJS = getDataForVisJS(tree, users, showForwardingPointers);
         data = dataForVisJS;
     }
 
@@ -29,9 +30,11 @@ function destroy() {
 
 var $print;
 function print(str) {
-    $print.append(
-        $("<li>").html(str)
-    );
+    if($print) {
+        $print.append(
+            $("<li>").html(str)
+        );
+    }
 };
 
 function draw() {
@@ -123,7 +126,7 @@ $(document).ready(function() {
             return;
         }
 
-        user.location = newLocation;
+        newLocation.registerUser(user);
         $number.val("");
         updateNetwork();
     })

@@ -6,6 +6,8 @@ function Node(parentNode) {
     this.parent = parentNode;
     this.children = {}; // all the immediate children
     this._subChildren = {}; // all of this node's children, and their children, for easy lookup
+    this._users = {};
+    this.forwardingPointers = {};
 
     this.level = 0;
     if(this.parent) {
@@ -31,6 +33,26 @@ Node.prototype.addSubChild = function(subChildNode) {
 
 Node.prototype.contains = function(node) {
     return Boolean(this.children[node.id] || this._subChildren[node.id]);
+};
+
+Node.prototype.registerUser = function(user) {
+    var oldLocation = user.location;
+    user.location = this;
+    if(oldLocation) {
+        oldLocation._unregisterUser(user);
+    }
+
+    this._users[user.id] = user;
+    if(this.forwardingPointers[user.id]) {
+        print("Node " + this.id + " purging forwarding pointer to user " + user.id);
+        delete this.forwardingPointers[user.id];
+    }
+};
+
+Node.prototype._unregisterUser = function(user) {
+    this.forwardingPointers[user.id] = user.location;
+    print("Node " + this.id + " registering forwarding pointer to user " + user.id);
+    delete this._users[user.id];
 };
 
 // Node helper function

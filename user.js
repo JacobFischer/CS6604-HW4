@@ -5,7 +5,8 @@ var colorIndex = 0;
 
 function User(id, location) {
     this.id = id;
-    this.location = location;
-    //location.registerUser(this);
     this.color = colors[colorIndex++];
+    this.location = location;
+    this.originalLocation = location;
+    location.registerUser(this);
 };
