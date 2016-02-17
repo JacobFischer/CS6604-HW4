@@ -59,6 +59,10 @@ Node.prototype._unregisterUser = function(user) {
     delete this._users[user.id];
 };
 
+Node.prototype.getInfo = function() {
+    return "Node " + this.id;
+};
+
 // Node helper function
 function LeastCommonAncestor(nodeA, nodeB) {
     var parentNode = nodeA;

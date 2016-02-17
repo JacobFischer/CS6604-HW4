@@ -92,7 +92,7 @@ function locateViaDatabase(caller, callee, endNode, originalData) {
         color: "green",
     });
 
-    print("Read the database here at the LCA to find the Caller is at Node " + endNode.id);
+    print("Read the database here at the LCA to find the Caller was at Node " + endNode.id);
 
     return {
         hops: hops + 1, // +1 for database hop

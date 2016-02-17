@@ -14,7 +14,7 @@
 		<script type="text/javascript" src="main.js"></script>
 		<link href="vis.css" rel="stylesheet" type="text/css" />
 	</head>
-	<body onload="draw();">
+	<body>
 		<h1>CS6604 - HW1</h1>
 		<br />
 		<div id="mynetwork">
@@ -31,6 +31,8 @@
 		<div id="homework-controls">
 			<div id="parameters">
 				<label for="use-forwarding-pointers">Use Forwarding Pointers?</label><input id="use-forwarding-pointers" type="checkbox" checked/>
+				<br />
+				<label for="use-replication">Use Replication?</label><input id="use-replication" type="checkbox" checked/>
 			</div>
 			<form id="move-user">
 				<label for="move-user-to">Move <select id="move-user-id" class="user-select"></select> to:</label><input id="move-user-to" type="number" min="0" value="0"/>
@@ -43,5 +45,7 @@
 		<ul id="print">
 		</ul>
 		<p id="cost"></p>
+		<div id="selected-info">
+		</div>
 	</body>
 </html>
