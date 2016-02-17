@@ -65,7 +65,7 @@ function getDataForVisJS(tree, users, showForwardingPointers) {
             id: node.id,
             label: String(node.id),
             level: node.level,
-            title: "title: " + node.id,
+            title: formatInfo(node.getInfo()),
         });
 
         for(var childNodeID in node.children) {
@@ -97,11 +97,13 @@ function getDataForVisJS(tree, users, showForwardingPointers) {
 
     for(var i = 0; i < users.length; i++) {
         var user = users[i];
+        var info = user.getInfo();
         visNodes.push({
             id: user.id,
             label: user.id,
             color: user.color,
             level: user.location.level + 1,
+            title: formatInfo(user.getInfo()),
         });
 
         visEdges.push({

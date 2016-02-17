@@ -66,6 +66,10 @@ function clearPrint() {
     }
 };
 
+function formatInfo(info) {
+    return String("<h2>" + info.title + "</h2><pre>" + JSON.stringify(info.data, null, 4) + "</pre>");
+}
+
 function draw() {
     destroy();
 
@@ -251,9 +255,8 @@ $(document).ready(function() {
 
                 var obj = (isNaN(intID) ? usersByID[id] : tree[intID]);
                 console.log(obj);
-                var info = obj.getInfo();
-                $selectedInfo
-                    .html("<h2>" + info.title + "</h2><pre>" + JSON.stringify(info.data, null, 4) + "</pre>");
+
+                $selectedInfo.html(formatInfo(obj.getInfo()));
             }
         })
         .on("deselectNode", function() {

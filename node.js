@@ -60,9 +60,39 @@ Node.prototype._unregisterUser = function(user) {
 };
 
 Node.prototype.getInfo = function() {
-    return "Node " + this.id;
-};
+    var children = [];
+    for(var childID in this.children) {
+        if(this.children.hasOwnProperty(childID)) {
+            children.push("Node " + childID);
+        }
+    }
+    children.sort();
 
+    var pointers = {};
+    for(var userID in this.forwardingPointers) {
+        if(this.forwardingPointers.hasOwnProperty(userID)) {
+            pointers["User " + userID] = "Node " + this.forwardingPointers[userID].id;
+        }
+    }
+
+    var users = [];
+    for(var userID in this._users) {
+        if(this._users.hasOwnProperty(userID)) {
+            users.push("User " + userID);
+        }
+    }
+    users.sort();
+
+    return {
+        title: "Node " + this.id,
+        data: {
+            parent: this.parent ? "Node " + this.parent.id : null,
+            children: children,
+            forwardingPointers: pointers,
+            users: users,
+        }
+    }
+};
 // Node helper function
 function LeastCommonAncestor(nodeA, nodeB) {
     var parentNode = nodeA;
