@@ -79,10 +79,13 @@ User.prototype.replicatedLocationfor = function(user) {
 };
 
 User.prototype.getInfo = function() {
-    var replications = {};
-    for(var userID in this._replicating) {
-        if(this._replicating.hasOwnProperty(userID)) {
-            replications["User " + userID] = "Node " + this._replicating[userID].id;
+    var replications;
+    if(showForwardingPointers) {
+        replications = {};
+        for(var userID in this._replicating) {
+            if(this._replicating.hasOwnProperty(userID)) {
+                replications["User " + userID] = "Node " + this._replicating[userID].id;
+            }
         }
     }
 

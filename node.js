@@ -31,8 +31,12 @@ Node.prototype.addSubChild = function(subChildNode) {
     return 0;
 };
 
+Node.prototype.subNode = function(node) {
+    return this.children[node.id] || this._subChildren[node.id];
+}
+
 Node.prototype.contains = function(node) {
-    return Boolean(this.children[node.id] || this._subChildren[node.id]);
+    return Boolean(this.subNode(node));
 };
 
 Node.prototype.hasUser = function(user) {
@@ -68,20 +72,32 @@ Node.prototype.getInfo = function() {
     }
     children.sort();
 
-    var pointers = {};
-    for(var userID in this.forwardingPointers) {
-        if(this.forwardingPointers.hasOwnProperty(userID)) {
-            pointers["User " + userID] = "Node " + this.forwardingPointers[userID].id;
+    var pointers;
+    if(showForwardingPointers) {
+        pointers = {};
+        for(var userID in this.forwardingPointers) {
+            if(this.forwardingPointers.hasOwnProperty(userID)) {
+                pointers["User " + userID] = "Node " + this.forwardingPointers[userID].id;
+            }
         }
     }
 
-    var users = [];
+    var myUsers = [];
     for(var userID in this._users) {
         if(this._users.hasOwnProperty(userID)) {
-            users.push("User " + userID);
+            myUsers.push("User " + userID);
         }
     }
     users.sort();
+
+    var database = [];
+    for(var i = 0; i < users.length; i++) {
+        var user = users[i];
+        var node = this.subNode(showForwardingPointers ? user.homeLocation : user.location);
+        if(node) {
+            database.push("User " + user.id + " is at Node " + node.id);
+        }
+    }
 
     return {
         title: "Node " + this.id,
@@ -89,7 +105,8 @@ Node.prototype.getInfo = function() {
             parent: this.parent ? "Node " + this.parent.id : null,
             children: children,
             forwardingPointers: pointers,
-            users: users,
+            users: myUsers,
+            database: database,
         }
     }
 };
