@@ -1,6 +1,10 @@
 // The 'main' function that should start everything
 
-var rootNode = GenerateTree(parseInt(GetUrlParameter("levels", 3)), parseInt(GetUrlParameter("branches", 3)));
+var rootNode = GenerateTree(
+    parseInt(GetUrlParameter("levels", 3)),
+    parseInt(GetUrlParameter("branches", 3)),
+    parseInt(GetUrlParameter("bucket", 3))
+);
 
 var network = null;
 var dataForVisJS;
@@ -13,6 +17,8 @@ function updateNetwork(data) {
 
     network.setData(data);
 };
+
+var $schedules;
 
 function draw() {
     if(network !== null) {
@@ -44,9 +50,44 @@ function draw() {
 
     network = new vis.Network(container, {}, options);
     updateNetwork();
+
+    $schedules.html("");
+    var $table = $("<table>").appendTo($schedules);
+
+    for(var a = 0; a < rootNode.children.length; a++) {
+        var nodeA = rootNode.children[a];
+
+        var $tr = $("<tr>")
+            .appendTo($table)
+            .append($("<td>I_" + (a+1) + "</td>"))
+            .append($("<td>" + nodeA.id + "</td>"));
+
+        var walk = function(node, values) {
+            $tr.append($("<td>" + node.id + "</td>"));
+
+            for(var c = 0; c < node.children.length; c++) {
+                walk(node.children[c], values);
+            }
+
+            if(node.data) {
+                values.push.apply(values, node.data);
+            }
+        };
+
+        for(var b = 0; b < nodeA.children.length; b++) {
+            var values = [];
+            walk(nodeA.children[b], values);
+
+            $tr
+                .append($("<td>" + values[0] + "</td>"))
+                .append($("<td>...</td>"))
+                .append($("<td>" + values.last() + "</td>"));
+        }
+    }
 };
 
 $(document).ready(function() {
+    $schedules = $("#schedules");
     draw();
 
     $selectedInfo = $("#selected-info");

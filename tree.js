@@ -1,4 +1,4 @@
-function GenerateTree(levels, branches) {
+function GenerateTree(levels, branches, buckets) {
     var root = new Node();
 
     var data = 0;
@@ -10,8 +10,10 @@ function GenerateTree(levels, branches) {
                 createBranches(newNode);
             }
             else {
-                newNode.data = data;
-                data += 3;
+                newNode.data = [];
+                for(var j = 0; j < buckets; j++) {
+                    newNode.data.push(data++);
+                }
             }
         }
     };
@@ -50,7 +52,7 @@ function GetDataForVisJS(rootNode) {
             var id = node.id + "-data";
             visNodes.push({
                 id: id,
-                label: String(node.data),
+                label: String(node.data.join(", ")),
                 level: node.level+1,
                 shape: "box",
                 color: "#333",
