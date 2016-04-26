@@ -50,6 +50,10 @@ Array.prototype.removeElement = function(item) {
     }
 };
 
+Array.prototype.contains = function(element) {
+    return (this.indexOf(element) > -1);
+};
+
 $print = undefined;
 function print(str) {
     if($print) {

@@ -20,8 +20,6 @@ function Node(parentNode) {
         this.id = AsLetter(this.level-1) + levelCount[this.level];
         this.parent._addChild(this);
     }
-
-    console.log("Node", this.id, "exists")
 };
 
 Node.prototype._addChild = function(childNode) {

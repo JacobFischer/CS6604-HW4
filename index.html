@@ -5,18 +5,27 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<title>CS66004-HW4</title>
 
+		<link href="vis.css" rel="stylesheet" type="text/css" />
+		<link href="style.css" rel="stylesheet" type="text/css" />
+
 		<script type="text/javascript" src="jquery-2.2.0.min.js"></script>
 		<script type="text/javascript" src="utils.js"></script>
 		<script type="text/javascript" src="node.js"></script>
 		<script type="text/javascript" src="tree.js"></script>
+		<script type="text/javascript" src="schedule.js"></script>
 		<script type="text/javascript" src="vis.js"></script>
 		<script type="text/javascript" src="locate.js"></script>
 		<script type="text/javascript" src="main.js"></script>
-		<link href="vis.css" rel="stylesheet" type="text/css" />
+
 	</head>
 	<body>
 		<h1>CS6604 - HW4</h1>
-		<br />
+		<p>
+			Implement Broadcasting Indexing Schedule for the partial replication with control index.
+			<br/>
+			Hint: start with a tree, and assume the replication level of the tree and design the schedule.
+			You can show how clients can reach to the data from the point they start tuning in.
+		</p>
 		<div id="mynetwork">
 			<div class="vis-network" tabindex="900" style="position: relative; overflow: hidden; touch-action: pan-y; -webkit-user-select: none; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); width: 100%; height: 100%;">
 			</div>
@@ -26,9 +35,12 @@
 		</h2>
 		<div id="schedules">
 		</div>
+		<div id="user-input">
+			Show a fetch of value <input id="fetch-value" type="number" value="0" min="0"/> when <input id="being-broadcast" type="textbox" disabled></input> is being broadcast.
+		</div>
+		<button id="clear">Clear</button>
 		<ul id="print">
 		</ul>
-		<p id="cost"></p>
 		<div id="selected-info">
 		</div>
 	</body>

@@ -1,9 +1,11 @@
 // The 'main' function that should start everything
 
+var BRANCHES = parseInt(GetUrlParameter("branches", 3));
+
 var rootNode = GenerateTree(
     parseInt(GetUrlParameter("levels", 3)),
-    parseInt(GetUrlParameter("branches", 3)),
-    parseInt(GetUrlParameter("bucket", 3))
+    BRANCHES,
+    parseInt(GetUrlParameter("buckets", 3))
 );
 
 var network = null;
@@ -19,6 +21,10 @@ function updateNetwork(data) {
 };
 
 var $schedules;
+var schedule = new Schedule(rootNode);
+var beingBroadcast = null;
+var $fetchValue = null;
+var $beingBroadcast = null;
 
 function draw() {
     if(network !== null) {
@@ -54,40 +60,67 @@ function draw() {
     $schedules.html("");
     var $table = $("<table>").appendTo($schedules);
 
-    for(var a = 0; a < rootNode.children.length; a++) {
-        var nodeA = rootNode.children[a];
+    for(var i = 0; i < schedule.schedules.length; i++) {
+        var subSchedule = schedule.schedules[i];
+        var $tr = $("<tr>").appendTo($table);
 
-        var $tr = $("<tr>")
-            .appendTo($table)
-            .append($("<td>I_" + (a+1) + "</td>"))
-            .append($("<td>" + nodeA.id + "</td>"));
+        for(var j = 0; j < subSchedule.length; j++) {
+            var scheduled = subSchedule[j];
 
-        var walk = function(node, values) {
-            $tr.append($("<td>" + node.id + "</td>"));
+            var title = scheduled.title;
+            /*if(scheduled.data !== undefined) {
+                while(scheduled && scheduled.data !== undefined) {
+                    scheduled = subSchedule[++j];
+                }
 
-            for(var c = 0; c < node.children.length; c++) {
-                walk(node.children[c], values);
+                scheduled = subSchedule[--j];
+                title += " ... " + scheduled.data;
+            }*/
+
+            var $td = $("<td>")
+                .html(title)
+                .attr("id", "scheduled-" + scheduled.title)
+                .appendTo($tr);
+
+            (function($td, scheduled) {
+                $td.on("click", function() {
+                    beingBroadcast = scheduled;
+                    $beingBroadcast.val(scheduled.title);
+                    var fetchData = parseInt($fetchValue.val());
+
+                    $schedules.addClass("showing")
+                    $("td", $schedules).removeClass("onpath");
+                    $("#schedules td").removeClass("broadcasting fetching");
+                    $(this).addClass("broadcasting");
+                    $("#bucket-" + fetchData).addClass("fetching");
+
+                    schedule.showPathTo(beingBroadcast, fetchData);
+                });
+            })($td, scheduled);
+
+            if(scheduled.node) {
+                $td.addClass("index-item");
             }
-
-            if(node.data) {
-                values.push.apply(values, node.data);
+            else { // data
+                $td.addClass("data-item").attr("id", "bucket-" + scheduled.data);
             }
-        };
-
-        for(var b = 0; b < nodeA.children.length; b++) {
-            var values = [];
-            walk(nodeA.children[b], values);
-
-            $tr
-                .append($("<td>" + values[0] + "</td>"))
-                .append($("<td>...</td>"))
-                .append($("<td>" + values.last() + "</td>"));
         }
     }
 };
 
 $(document).ready(function() {
+    $print = $("#print");
     $schedules = $("#schedules");
+    $fetchValue = $("#fetch-value");
+    $beingBroadcast = $("#being-broadcast");
+
+    $("#clear").on("click", function() {
+        beingBroadcast = null;
+        $schedules.removeClass("showing");
+        $("td.broadcasting, td.fetching").removeClass("fetching broadcasting");
+        clearPrint();
+    })
+
     draw();
 
     $selectedInfo = $("#selected-info");
